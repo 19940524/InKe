@@ -85,7 +85,10 @@
     
     self.contentScrollView.contentOffset = CGPointMake(SCREEN_WIDTH, 0);
     
+    [self.topView showBGViewLine:1];
+    
     [self scrollViewDidEndScrollingAnimation:self.contentScrollView];
+    
     
 }
 

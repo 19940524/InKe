@@ -11,11 +11,13 @@
 
 typedef void(^MainTopBlock)(NSInteger tag);
 
-@interface CYMainTopView : UIView
+@interface CYMainTopView : UIScrollView
 
 - (instancetype)initWithFrame:(CGRect)frame titles:(NSArray *)titles tapView:(MainTopBlock)block;
 
 - (void)scrolling:(NSInteger)tag;
+
+- (void)showBGViewLine:(NSInteger)tag;
 
 - (void)premiereText:(CGFloat)offsetX toLeft:(BOOL)toLeft;
 

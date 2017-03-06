@@ -26,6 +26,7 @@
 		A657870E1E6BDFA600C1F403 /* CYNearLiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A657870D1E6BDFA600C1F403 /* CYNearLiveViewController.m */; };
 		A65787111E6BDFF900C1F403 /* CYTalentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A65787101E6BDFF900C1F403 /* CYTalentViewController.m */; };
 		A65787141E6BE04600C1F403 /* CYGoodSoundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A65787131E6BE04600C1F403 /* CYGoodSoundViewController.m */; };
+		A670E0A51E6D9F67001ACA39 /* CYBGTopView.m in Sources */ = {isa = PBXBuildFile; fileRef = A670E0A41E6D9F67001ACA39 /* CYBGTopView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +85,8 @@
 		A65787101E6BDFF900C1F403 /* CYTalentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CYTalentViewController.m; sourceTree = "<group>"; };
 		A65787121E6BE04600C1F403 /* CYGoodSoundViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CYGoodSoundViewController.h; sourceTree = "<group>"; };
 		A65787131E6BE04600C1F403 /* CYGoodSoundViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CYGoodSoundViewController.m; sourceTree = "<group>"; };
+		A670E0A31E6D9F67001ACA39 /* CYBGTopView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CYBGTopView.h; sourceTree = "<group>"; };
+		A670E0A41E6D9F67001ACA39 /* CYBGTopView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CYBGTopView.m; sourceTree = "<group>"; };
 		A6F0458E1E6AF52800A25C02 /* InKe.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InKe.pch; sourceTree = "<group>"; };
 		A6F0458F1E6AF57000A25C02 /* CYMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CYMacros.h; sourceTree = "<group>"; };
 		B5CB93E8031E329AC6BC1FA3 /* Pods-InKe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InKe.debug.xcconfig"; path = "Pods/Target Support Files/Pods-InKe/Pods-InKe.debug.xcconfig"; sourceTree = "<group>"; };
@@ -393,6 +396,8 @@
 			children = (
 				A65787031E6BDB4E00C1F403 /* CYMainTopView.h */,
 				A65787041E6BDB4E00C1F403 /* CYMainTopView.m */,
+				A670E0A31E6D9F67001ACA39 /* CYBGTopView.h */,
+				A670E0A41E6D9F67001ACA39 /* CYBGTopView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -662,6 +667,7 @@
 				A65786F01E6BB68D00C1F403 /* CYTabbar.m in Sources */,
 				A65786FF1E6BC5EB00C1F403 /* CYMainViewController.m in Sources */,
 				A65786F91E6BB77000C1F403 /* CYBaseViewController.m in Sources */,
+				A670E0A51E6D9F67001ACA39 /* CYBGTopView.m in Sources */,
 				A65787051E6BDB4E00C1F403 /* CYMainTopView.m in Sources */,
 				A645BA9E1E6AC62A00A5E296 /* AppDelegate.m in Sources */,
 				A65787081E6BDF8900C1F403 /* CYFocusLiveViewController.m in Sources */,
