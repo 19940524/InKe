@@ -10,6 +10,6 @@
 
 @interface CYBGTopView : UIView
 
-- (void)drawLineMovePath:(CGPoint)movePath toPath:(CGPoint)toPoint;
+- (void)drawLine:(NSArray *)points;
 
 @end

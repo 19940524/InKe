@@ -9,9 +9,8 @@
 #import "CYBGTopView.h"
 
 @interface CYBGTopView () {
-    CGPoint _movePath;
-    CGPoint _toPath;
-    NSArray *_sizes;
+    NSArray *_points;
+    
 }
 @property (nonatomic, strong) UIBezierPath *bezierPath;
 
@@ -31,16 +30,24 @@
 }
 
 - (void)drawRect:(CGRect)rect {
+    
     [self.bezierPath removeAllPoints];
-    [self.bezierPath moveToPoint:_movePath];
-    [self.bezierPath addLineToPoint:_toPath];
+    
+    for (int i = 0; i < _points.count; i++) {
+        NSValue *value = _points[i];
+        if (i == 0) {
+            [self.bezierPath moveToPoint:value.CGPointValue];
+        } else {
+            [self.bezierPath addLineToPoint:value.CGPointValue];
+        }
+    }
+    
     [[UIColor whiteColor] set];
     [self.bezierPath stroke];
 }
 
-- (void)drawLineMovePath:(CGPoint)movePath toPath:(CGPoint)toPoint {
-    _movePath = movePath;
-    _toPath = toPoint;
+- (void)drawLine:(NSArray *)points {
+    _points = points;
     [self setNeedsDisplay];
 }
 

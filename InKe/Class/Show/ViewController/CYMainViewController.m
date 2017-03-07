@@ -36,9 +36,9 @@
     
     self.navigationItem.titleView = self.topView;
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"global_search"] style:UIBarButtonItemStylePlain target:self action:@selector(search)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"global_search"] style:UIBarButtonItemStylePlain target:self action:@selector(__search)];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"title_button_more"] style:UIBarButtonItemStylePlain target:self action:@selector(search)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"title_button_more"] style:UIBarButtonItemStylePlain target:self action:@selector(__message)];
 }
 
 - (NSArray *)titleNames {
@@ -53,7 +53,10 @@
     
     if (!_topView) {
         
-        _topView = [[CYMainTopView alloc] initWithFrame:CGRectMake(0, 0, 250, 40) titles:self.titleNames tapView:^(NSInteger tag) {
+        _topView = [[CYMainTopView alloc] initWithFrame:CGRectMake(0, 0, 250, 40)
+                                                 titles:self.titleNames
+                                               lineType:LineType_sjx
+                                                tapView:^(NSInteger tag) {
             
             CGPoint point = CGPointMake(tag * SCREEN_WIDTH ,self.contentScrollView.contentOffset.y);
             [UIView animateWithDuration:0.16 animations:^{
@@ -133,8 +136,14 @@ static CGFloat lastOffsetX = 0;
     lastOffsetX = offsetX;
 }
 
-- (void)search {
-    
+- (void)__search {
+    _topView.lineType = LineType_zx;
+    [_topView showBGViewLine: _topView.selectedIndex];
+}
+
+- (void)__message {
+    _topView.lineType = LineType_sjx;
+    [_topView showBGViewLine: _topView.selectedIndex];
 }
 
 - (void)didReceiveMemoryWarning {

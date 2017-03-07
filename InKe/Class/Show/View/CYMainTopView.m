@@ -12,10 +12,12 @@
 #define kFont 16
 #define kMaxWeight 1
 #define kDefaultAlpha 0.6
-#define kLineLength 14
+#define kLineLength 13
+//#define kLineY self.height - kLineLength / 2 - 3 // 35
 
 @interface CYMainTopView () {
     UIButton *_seleteButton;
+    CGFloat _lineY;
 }
 
 @property (nonatomic, strong) CYBGTopView *bgView;
@@ -23,8 +25,6 @@
 @property (nonatomic, copy) MainTopBlock block;
 
 @property (nonatomic, strong) NSMutableArray *buttons;
-
-@property (nonatomic, strong) NSMutableArray *btnSizes;
 
 @end
 
@@ -38,13 +38,21 @@
     return _buttons;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame titles:(NSArray *)titles tapView:(MainTopBlock)block {
+-(void)setLineType:(LineType)lineType {
+    _lineType = lineType;
+    if (lineType == LineType_sjx) {
+        _lineY = self.height - kLineLength / 2 - 1;
+    } else {
+        _lineY = 35;
+    }
+}
+
+- (instancetype)initWithFrame:(CGRect)frame titles:(NSArray *)titles lineType:(LineType)lineType tapView:(MainTopBlock)block {
     
     if (self = [super initWithFrame:frame]) {
-        
+        self.lineType = lineType;
         self.block = block;
         self.backgroundColor = [UIColor clearColor];
-        self.btnSizes = [NSMutableArray array];
         [self __initUI:titles];
     }
     return self;
@@ -75,8 +83,11 @@
         [titleButton setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:kDefaultAlpha] forState:UIControlStateNormal];
         titleButton.titleLabel.font = [UIFont systemFontOfSize:kFont weight:0];
         [titleButton sizeToFit];
+//        NSLog(@"size = %@  %f  %f",NSStringFromCGSize(titleButton.size),titleButton.bottom,_lineY);
         titleButton.frame = CGRectMake(btnX, 0, titleButton.width+20, btnH);
-        [self.btnSizes addObject:[NSValue valueWithCGSize:titleButton.size]];
+//        if (titleButton.bottom > _lineY) {
+//            [titleButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, titleButton.bottom-_lineY-1.5, 0)];
+//        }
         [titleButton addTarget:self action:@selector(titleClick:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:titleButton];
         
@@ -96,11 +107,13 @@
 
 - (void)scrolling:(NSInteger)tag {
     
+    _selectedIndex = tag;
+    
     UIButton *button = self.buttons[tag];
     
     [UIView animateWithDuration:0.16 animations:^{
-        [self setButtonLabelPremiere:_seleteButton alpha:kDefaultAlpha weight:0];
-        [self setButtonLabelPremiere:button alpha:1 weight:1];
+        [self __setButtonLabelPremiere:_seleteButton alpha:kDefaultAlpha weight:0];
+        [self __setButtonLabelPremiere:button alpha:1 weight:1];
     } completion:nil];
     
     _seleteButton = button;
@@ -138,10 +151,10 @@
     // 0.6 ~ 1 & 1 ~ 0.6
     CGFloat toAlpha;
     CGFloat currentAlpha;
-    
     CGFloat currentWeight;
     CGFloat toWeight;
     
+    // 计算透明度和字体粗细
     if (toLeft) {
         currentButton = _buttons[secondIndex];
         toButton = _buttons[firstIndex];
@@ -163,17 +176,19 @@
         currentWeight = (1 - (offsetX - firstIndex)) * kMaxWeight;
     }
     
-    [self setButtonLabelPremiere:currentButton alpha:currentAlpha weight:currentWeight];
-    [self setButtonLabelPremiere:toButton alpha:toAlpha weight:toWeight];
+    [self __setButtonLabelPremiere:currentButton alpha:currentAlpha weight:currentWeight];
+    [self __setButtonLabelPremiere:toButton alpha:toAlpha weight:toWeight];
     
     [self __scrollBGViewLine:offsetX curBtn:currentButton toBtn:toButton toLeft:toLeft];
+    
 }
 
-- (void)setButtonLabelPremiere:(UIButton *)button alpha:(CGFloat)alpha weight:(CGFloat)weight {
+- (void)__setButtonLabelPremiere:(UIButton *)button alpha:(CGFloat)alpha weight:(CGFloat)weight {
     button.titleLabel.font = [UIFont systemFontOfSize:kFont weight:weight];
     [button setTitleColor:[[UIColor whiteColor] colorWithAlphaComponent:alpha] forState:UIControlStateNormal];
 }
 
+#pragma mark - 计算直线点
 - (void)__scrollBGViewLine:(CGFloat)offsetX curBtn:(UIButton *)curBtn toBtn:(UIButton *)toBtn toLeft:(BOOL)toLeft {
     
     CGFloat mp = curBtn.centerX - kLineLength / 2;
@@ -187,30 +202,96 @@
     }
     
     // 线的起点
-    CGPoint movePath = CGPointMake(x, 35);
+    CGPoint movePath = CGPointMake(x, _lineY);
     CGPoint toPath = CGPointMake(movePath.x+kLineLength, movePath.y);
 
-    [self.bgView drawLineMovePath:movePath toPath:toPath];
+    NSMutableArray *points = [NSMutableArray array];
+    
+    
+    if (self.lineType == LineType_sjx) {
+        CGFloat arrows;
+        CGFloat tail;
+        
+        if (toLeft) {
+            
+        } else {
+            arrows = toPath.x;
+            tail = arrows - kLineLength;
+            
+            if (tail < mp + kLineLength) {
+                if (tail <= mp + kLineLength / 2) {
+                    CGFloat belowInclinedY = movePath.y+(tail - mp);
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(tail, belowInclinedY)]];
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(mp + kLineLength / 2, movePath.y + kLineLength / 2)]];
+                }
+                if (tail > mp + kLineLength / 2  && tail < mp + kLineLength) {
+                    CGFloat upInclinedY = movePath.y + (kLineLength / 2  - (tail - mp - kLineLength / 2));
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(movePath.x, upInclinedY)]];
+                }
+                [points addObject:[NSValue valueWithCGPoint:CGPointMake(mp+kLineLength, movePath.y)]];
+            } else {
+                [points addObject:[NSValue valueWithCGPoint:movePath]];
+            }
+            
+            if (arrows >= tp) {
+                [points addObject:[NSValue valueWithCGPoint:CGPointMake(tp, movePath.y)]];
+                if (arrows < tp + kLineLength / 2) {
+                    CGFloat belowInclinedY = movePath.y+(arrows - tp);
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(arrows, belowInclinedY)]];
+                }
+                
+                if (arrows >= tp + kLineLength / 2) {
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(tp+kLineLength/2, movePath.y+kLineLength/2)]];
+                    CGFloat upInclinedY = movePath.y+(kLineLength - (arrows - tp));
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(arrows, upInclinedY)]];
+                }
+            } else {
+
+            }
+            [points addObject:[NSValue valueWithCGPoint:toPath]];
+        }
+    } else {
+        [points addObject:[NSValue valueWithCGPoint:movePath]];
+        [points addObject:[NSValue valueWithCGPoint:toPath]];
+    }
+    
+    
+    [self.bgView drawLine:[points copy]];
+    
 }
 
 - (void)showBGViewLine:(NSInteger)tag {
+    
     UIButton *button = self.buttons[tag];
     CGFloat mp = button.centerX - kLineLength / 2;
     
-    CGPoint movePath = CGPointMake(mp, 35);
+    NSMutableArray *points = [NSMutableArray array];
+    
+    CGPoint movePath = CGPointMake(mp, _lineY);
     CGPoint toPath = CGPointMake(movePath.x+kLineLength, movePath.y);
     
-    [self.bgView drawLineMovePath:movePath toPath:toPath];
+    [points addObject:[NSValue valueWithCGPoint:movePath]];
+    if (self.lineType == LineType_sjx) {
+        CGPoint zj = CGPointMake(movePath.x + kLineLength / 2, _lineY + kLineLength / 2);
+        [points addObject:[NSValue valueWithCGPoint:zj]];
+    }
+    [points addObject:[NSValue valueWithCGPoint:toPath]];
+    
+    [self.bgView drawLine:[points copy]];
 }
-
 
 - (void)titleClick:(UIButton *)button {
     
     self.block(button.tag);
     
     [self scrolling:button.tag];
-    
+
     [self showBGViewLine:button.tag];
 }
+
+
+
+
+
 
 @end
