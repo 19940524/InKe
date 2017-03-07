@@ -116,9 +116,7 @@
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    
     [self scrollViewDidEndScrollingAnimation:scrollView];
-    
 }
 
 static CGFloat lastOffsetX = 0;

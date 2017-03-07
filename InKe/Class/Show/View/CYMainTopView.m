@@ -234,6 +234,7 @@
             }
             
             if (arrows >= tp) {
+                
                 [points addObject:[NSValue valueWithCGPoint:CGPointMake(tp, movePath.y)]];
                 if (arrows < tp + kLineLength / 2) {
                     CGFloat belowInclinedY = movePath.y+(arrows - tp);
@@ -246,9 +247,8 @@
                     [points addObject:[NSValue valueWithCGPoint:CGPointMake(arrows, upInclinedY)]];
                 }
             } else {
-
+                [points addObject:[NSValue valueWithCGPoint:toPath]];
             }
-            [points addObject:[NSValue valueWithCGPoint:toPath]];
         }
     } else {
         [points addObject:[NSValue valueWithCGPoint:movePath]];

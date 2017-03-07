@@ -24,6 +24,8 @@ typedef void(^MainTopBlock)(NSInteger tag);
 
 @property (nonatomic, readonly, assign) NSInteger selectedIndex;
 
+//@property (nonatomic, assign) NSInteger selectedIndexArrow; // 默认为-1 所有都是直角 当lineType 为 LineType_sjx 才有效
+
 - (void)scrolling:(NSInteger)tag;
 
 - (void)showBGViewLine:(NSInteger)tag;
