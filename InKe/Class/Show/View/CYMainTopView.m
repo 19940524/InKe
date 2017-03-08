@@ -133,8 +133,6 @@
 
 - (void)premiereText:(CGFloat)offsetX toLeft:(BOOL)toLeft {
     
-//    NSLog(@"offset X --- > %f",offsetX);
-    
     int firstIndex = (int)offsetX;
     int secondIndex = (int)ceil(offsetX);
     
@@ -143,6 +141,7 @@
     }
     
     if (firstIndex == secondIndex) {
+        [self showBGViewLine:firstIndex];
         return;
     }
     
