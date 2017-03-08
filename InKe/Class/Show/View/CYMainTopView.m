@@ -13,7 +13,8 @@
 #define kMaxWeight 1
 #define kDefaultAlpha 0.6
 #define kLineLength 13
-//#define kLineY self.height - kLineLength / 2 - 3 // 35
+#define kLineLengthHalf kLineLength / 2
+//#define kLineY self.height - kLineLengthHalf - 3 // 35
 
 @interface CYMainTopView () {
     UIButton *_seleteButton;
@@ -41,7 +42,7 @@
 -(void)setLineType:(LineType)lineType {
     _lineType = lineType;
     if (lineType == LineType_sjx) {
-        _lineY = self.height - kLineLength / 2 - 1;
+        _lineY = self.height - kLineLengthHalf - 1;
     } else {
         _lineY = 35;
     }
@@ -191,8 +192,8 @@
 #pragma mark - 计算直线点
 - (void)__scrollBGViewLine:(CGFloat)offsetX curBtn:(UIButton *)curBtn toBtn:(UIButton *)toBtn toLeft:(BOOL)toLeft {
     
-    CGFloat mp = curBtn.centerX - kLineLength / 2;
-    CGFloat tp = toBtn.centerX - kLineLength / 2;
+    CGFloat mp = curBtn.centerX - kLineLengthHalf;
+    CGFloat tp = toBtn.centerX - kLineLengthHalf;
     CGFloat x;
     if (toLeft) {
         CGFloat dist = mp - tp;
@@ -214,19 +215,63 @@
         
         if (toLeft) {
             
+            arrows = movePath.x;
+            tail = arrows + kLineLength;
+            if (tail >= mp) {
+                
+                [points addObject:[NSValue valueWithCGPoint:movePath]];
+                
+                [points addObject:[NSValue valueWithCGPoint:CGPointMake(mp, movePath.y)]];
+                if (tail >= mp + kLineLengthHalf) {
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(mp + kLineLengthHalf, movePath.y + kLineLengthHalf)]];
+                    CGFloat belowInclinedY = movePath.y + (kLineLength - (tail - mp));
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(tail, belowInclinedY)]];
+                }
+                if (tail > mp && tail < mp + kLineLengthHalf) {
+                    CGFloat upInclinedY = movePath.y + (tail - mp);
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(tail, upInclinedY)]];
+                }
+            } else {
+                if (arrows > tp + kLineLength) {
+                    [points addObject:[NSValue valueWithCGPoint:movePath]];
+                }
+                if (arrows < tp + kLineLength && arrows > tp + kLineLengthHalf) {
+                    CGFloat belowInclinedY = movePath.y + (kLineLength - (arrows - tp));
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(arrows, belowInclinedY)]];
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(tp+kLineLength, movePath.y)]];
+                }
+                
+                if (arrows < tp + kLineLengthHalf) {
+                    
+                    CGFloat upInclinedY = movePath.y + (kLineLengthHalf  - (kLineLengthHalf - (arrows - tp)));
+                    if (upInclinedY > _lineY) {
+                        [points addObject:[NSValue valueWithCGPoint:CGPointMake(movePath.x, upInclinedY)]];
+                    }
+                    if (tail >= tp + kLineLength) {
+                        [points addObject:[NSValue valueWithCGPoint:CGPointMake(tp+kLineLengthHalf, movePath.y+kLineLengthHalf)]];
+                        [points addObject:[NSValue valueWithCGPoint:CGPointMake(tp+kLineLength, movePath.y)]];
+                    }
+                }
+                
+                [points addObject:[NSValue valueWithCGPoint:toPath]];
+            }
         } else {
             arrows = toPath.x;
             tail = arrows - kLineLength;
             
             if (tail < mp + kLineLength) {
-                if (tail <= mp + kLineLength / 2) {
+                if (tail <= mp + kLineLengthHalf) {
                     CGFloat belowInclinedY = movePath.y+(tail - mp);
                     [points addObject:[NSValue valueWithCGPoint:CGPointMake(tail, belowInclinedY)]];
-                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(mp + kLineLength / 2, movePath.y + kLineLength / 2)]];
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(mp + kLineLengthHalf, movePath.y + kLineLengthHalf)]];
                 }
-                if (tail > mp + kLineLength / 2  && tail < mp + kLineLength) {
-                    CGFloat upInclinedY = movePath.y + (kLineLength / 2  - (tail - mp - kLineLength / 2));
-                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(movePath.x, upInclinedY)]];
+                if (tail > mp + kLineLengthHalf  && tail <= mp + kLineLength) {
+                    // bug
+                    CGFloat upInclinedY = movePath.y + (kLineLengthHalf  - (tail - mp - kLineLengthHalf));
+                    if (upInclinedY > _lineY) {
+                        [points addObject:[NSValue valueWithCGPoint:CGPointMake(movePath.x, upInclinedY)]];
+                    }
+                    
                 }
                 [points addObject:[NSValue valueWithCGPoint:CGPointMake(mp+kLineLength, movePath.y)]];
             } else {
@@ -236,13 +281,13 @@
             if (arrows >= tp) {
                 
                 [points addObject:[NSValue valueWithCGPoint:CGPointMake(tp, movePath.y)]];
-                if (arrows < tp + kLineLength / 2) {
+                if (arrows < tp + kLineLengthHalf) {
                     CGFloat belowInclinedY = movePath.y+(arrows - tp);
                     [points addObject:[NSValue valueWithCGPoint:CGPointMake(arrows, belowInclinedY)]];
                 }
                 
-                if (arrows >= tp + kLineLength / 2) {
-                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(tp+kLineLength/2, movePath.y+kLineLength/2)]];
+                if (arrows >= tp + kLineLengthHalf) {
+                    [points addObject:[NSValue valueWithCGPoint:CGPointMake(tp+kLineLengthHalf, movePath.y+kLineLengthHalf)]];
                     CGFloat upInclinedY = movePath.y+(kLineLength - (arrows - tp));
                     [points addObject:[NSValue valueWithCGPoint:CGPointMake(arrows, upInclinedY)]];
                 }
@@ -263,7 +308,7 @@
 - (void)showBGViewLine:(NSInteger)tag {
     
     UIButton *button = self.buttons[tag];
-    CGFloat mp = button.centerX - kLineLength / 2;
+    CGFloat mp = button.centerX - kLineLengthHalf;
     
     NSMutableArray *points = [NSMutableArray array];
     
@@ -272,7 +317,7 @@
     
     [points addObject:[NSValue valueWithCGPoint:movePath]];
     if (self.lineType == LineType_sjx) {
-        CGPoint zj = CGPointMake(movePath.x + kLineLength / 2, _lineY + kLineLength / 2);
+        CGPoint zj = CGPointMake(movePath.x + kLineLengthHalf, _lineY + kLineLengthHalf);
         [points addObject:[NSValue valueWithCGPoint:zj]];
     }
     [points addObject:[NSValue valueWithCGPoint:toPath]];

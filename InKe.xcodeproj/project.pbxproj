@@ -550,7 +550,8 @@
 				TargetAttributes = {
 					A645BA491E6AC2E400A5E296 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = A8KFV64EKE;
+						DevelopmentTeam = 728HDLFBEQ;
+						ProvisioningStyle = Automatic;
 					};
 					A645BA621E6AC2E400A5E296 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -826,10 +827,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 728HDLFBEQ;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/InKe/Class/Other/InKe.pch";
 				INFOPLIST_FILE = InKe/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = lcy.InKe;
+				PRODUCT_BUNDLE_IDENTIFIER = com.huamao.InKe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -841,10 +844,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 728HDLFBEQ;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/InKe/Class/Other/InKe.pch";
 				INFOPLIST_FILE = InKe/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = lcy.InKe;
+				PRODUCT_BUNDLE_IDENTIFIER = com.huamao.InKe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
